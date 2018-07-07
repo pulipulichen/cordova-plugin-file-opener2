@@ -109,7 +109,12 @@ public class FileOpener2 extends CordovaPlugin {
 				cordova.getActivity().startActivity(intent);
 				return;
 			}
-			catch (Exception e) {}
+			catch (Exception e) {
+				JSONObject errorObj = new JSONObject();
+				errorObj.put("status", PluginResult.Status.ERROR.ordinal());
+				errorObj.put("message", e.getMessage());
+				callbackContext.error(errorObj);
+			}
 		}
 		
 		try {
