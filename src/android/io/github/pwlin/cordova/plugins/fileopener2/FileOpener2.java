@@ -216,7 +216,28 @@ public class FileOpener2 extends CordovaPlugin {
 	}
 	
 	private void _getFilename(String fileArg, CallbackContext callbackContext) throws JSONException {
-		callbackContext.success("test");
+		Uri uri = resourceApi.remapUri(Uri.parse(fileArg));
+		String result = null;
+		
+		  if (uri.getScheme().equals("content")) {
+		    Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+		    try {
+		      if (cursor != null && cursor.moveToFirst()) {
+			result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+		      }
+		    } finally {
+		      cursor.close();
+		    }
+		  }
+		  if (result == null) {
+		    result = uri.getPath();
+		    int cut = result.lastIndexOf('/');
+		    if (cut != -1) {
+		      result = result.substring(cut + 1);
+		    }
+		  }
+		
+		callbackContext.success(result);
 	}
 
 	private void _uninstall(String packageId, CallbackContext callbackContext) throws JSONException {
