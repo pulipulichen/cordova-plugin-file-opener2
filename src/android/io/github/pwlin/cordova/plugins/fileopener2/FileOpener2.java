@@ -61,17 +61,10 @@ public class FileOpener2 extends CordovaPlugin {
 			String fileUrl = args.getString(0);
 			String contentType = args.getString(1);
 			Boolean openWithDefault = true;
-			String package = null;
-			if(args.length() > 2){
-				openWithDefault = args.getBoolean(2);
-			}
-			this._open(fileUrl, contentType, openWithDefault, package, callbackContext);
-		}
-		else if (action.equals("openApp")) {
-			String fileUrl = args.getString(0);
-			String contentType = args.getString(1);
 			String package = args.getString(2);
-			Boolean openWithDefault = true;
+			if(args.length() > 3){
+				openWithDefault = args.getBoolean(3);
+			}
 			this._open(fileUrl, contentType, openWithDefault, package, callbackContext);
 		}
 		else if (action.equals("uninstall")) {
