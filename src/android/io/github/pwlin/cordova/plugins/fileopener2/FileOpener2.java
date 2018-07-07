@@ -98,15 +98,45 @@ public class FileOpener2 extends CordovaPlugin {
 		if (fileArg.startsWith("content://")) {
 			try {
 				CordovaResourceApi resourceApi = webView.getResourceApi();
-				Uri fileUri = resourceApi.remapUri(Uri.parse(fileArg));
+				Uri path = resourceApi.remapUri(Uri.parse(fileArg));
 
 				Intent intent = new Intent(Intent.ACTION_VIEW);
 				if (aPackage != null) {
-					intent.setPackage(aPackage);
+				    intent.setPackage(aPackage);
 				}
-				intent.setDataAndType(fileUri, contentType);
-				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				cordova.getActivity().startActivity(intent);
+
+				if((Build.VERSION.SDK_INT >= 23 && !contentType.equals("application/vnd.android.package-archive")) || ((Build.VERSION.SDK_INT == 24 || Build.VERSION.SDK_INT == 25) && contentType.equals("application/vnd.android.package-archive"))) {
+
+				    Context context = cordova.getActivity().getApplicationContext();
+				    path = FileProvider.getUriForFile(context, cordova.getActivity().getPackageName() + ".opener.provider", file);
+				    intent.setDataAndType(path, contentType);
+				    intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+				    intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+				    //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+				    List<ResolveInfo> infoList = context.getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+				    for (ResolveInfo resolveInfo : infoList) {
+				    String packageName = resolveInfo.activityInfo.packageName;
+				    context.grantUriPermission(packageName, path, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+				    }
+				}
+				else {
+				    intent.setDataAndType(path, contentType);
+				    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				}
+				/*
+				 * @see
+				 * http://stackoverflow.com/questions/14321376/open-an-activity-from-a-cordovaplugin
+				 */
+				 if(openWithDefault){
+				     cordova.getActivity().startActivity(intent);
+				 }
+				 else{
+				     cordova.getActivity().startActivity(Intent.createChooser(intent, "Open File in..."));
+				 }
+
+				 callbackContext.success();
+				
 				return;
 			}
 			catch (Exception e) {
