@@ -216,6 +216,7 @@ public class FileOpener2 extends CordovaPlugin {
 	}
 	
 	private void _getFilename(String fileArg, CallbackContext callbackContext) throws JSONException {
+		CordovaResourceApi resourceApi = webView.getResourceApi();
 		Uri uri = resourceApi.remapUri(Uri.parse(fileArg));
 		String result = null;
 		
