@@ -70,18 +70,9 @@ public class FileOpener2 extends CordovaPlugin {
 			}
 			this._open(fileUrl, contentType, openWithDefault, aPackage, callbackContext);
 		}
-		else if (action.equals("openApp")) {
+		else if (action.equals("getFileName")) {
 			String fileUrl = args.getString(0);
-			String contentType = args.getString(1);
-			String aPackage = args.getString(2);
-			if (aPackage.equals("")) {
-				aPackage = null;
-			}
-			Boolean openWithDefault = true;
-			if(args.length() > 3){
-				openWithDefault = args.getBoolean(3);
-			}
-			this._open(fileUrl, contentType, openWithDefault, aPackage, callbackContext);
+			this._getFilename(fileUrl, callbackContext);
 		}
 		else if (action.equals("uninstall")) {
 			this._uninstall(args.getString(0), callbackContext);
@@ -222,6 +213,10 @@ public class FileOpener2 extends CordovaPlugin {
 			errorObj.put("message", "File not found");
 			callbackContext.error(errorObj);
 		}
+	}
+	
+	private void _getFilename(String fileArg, CallbackContext callbackContext) throws JSONException {
+		callbackContext.success("test");
 	}
 
 	private void _uninstall(String packageId, CallbackContext callbackContext) throws JSONException {
