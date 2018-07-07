@@ -41,7 +41,7 @@ FileOpener2.prototype.openApp = function (fileName, contentType, packageName, ca
         packageName = "";
     }
     callbackContext = callbackContext || {};
-    exec(callbackContext.success || null, callbackContext.error || null, 'FileOpener2', 'open', [fileName, contentType, packageName]);
+    exec(callbackContext.success || null, callbackContext.error || null, 'FileOpener2', 'openApp', [fileName, contentType, packageName]);
 };
 
 FileOpener2.prototype.showOpenWithDialog = function (fileName, contentType, packageName, callbackContext) {
