@@ -35,6 +35,15 @@ FileOpener2.prototype.open = function (fileName, contentType, packageName, callb
     exec(callbackContext.success || null, callbackContext.error || null, 'FileOpener2', 'open', [fileName, contentType, packageName]);
 };
 
+FileOpener2.prototype.openApp = function (fileName, contentType, packageName, callbackContext) {
+    if (typeof(packageName) === "object") {
+        callbackContext = packageName;
+        packageName = "";
+    }
+    callbackContext = callbackContext || {};
+    exec(callbackContext.success || null, callbackContext.error || null, 'FileOpener2', 'open', [fileName, contentType, packageName]);
+};
+
 FileOpener2.prototype.showOpenWithDialog = function (fileName, contentType, packageName, callbackContext) {
     if (typeof(packageName) === "object") {
         callbackContext = packageName;
