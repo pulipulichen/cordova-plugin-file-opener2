@@ -61,10 +61,18 @@ public class FileOpener2 extends CordovaPlugin {
 			String fileUrl = args.getString(0);
 			String contentType = args.getString(1);
 			Boolean openWithDefault = true;
+			String package = null;
 			if(args.length() > 2){
 				openWithDefault = args.getBoolean(2);
 			}
-			this._open(fileUrl, contentType, openWithDefault, callbackContext);
+			this._open(fileUrl, contentType, openWithDefault, package, callbackContext);
+		}
+		else if (action.equals("openApp")) {
+			String fileUrl = args.getString(0);
+			String contentType = args.getString(1);
+			String package = args.getString(2);
+			Boolean openWithDefault = true;
+			this._open(fileUrl, contentType, openWithDefault, package, callbackContext);
 		}
 		else if (action.equals("uninstall")) {
 			this._uninstall(args.getString(0), callbackContext);
@@ -90,7 +98,7 @@ public class FileOpener2 extends CordovaPlugin {
 		return true;
 	}
 
-	private void _open(String fileArg, String contentType, Boolean openWithDefault, CallbackContext callbackContext) throws JSONException {
+	private void _open(String fileArg, String contentType, Boolean openWithDefault, String package, CallbackContext callbackContext) throws JSONException {
 		String fileName = "";
 		try {
 			CordovaResourceApi resourceApi = webView.getResourceApi();
@@ -104,6 +112,10 @@ public class FileOpener2 extends CordovaPlugin {
 			try {
 				Uri path = Uri.fromFile(file);
 				Intent intent = new Intent(Intent.ACTION_VIEW);
+				if (package != null) {
+					intent.setPackage(package);
+				}
+				
 				if((Build.VERSION.SDK_INT >= 23 && !contentType.equals("application/vnd.android.package-archive")) || ((Build.VERSION.SDK_INT == 24 || Build.VERSION.SDK_INT == 25) && contentType.equals("application/vnd.android.package-archive"))) {
 
 					Context context = cordova.getActivity().getApplicationContext();
