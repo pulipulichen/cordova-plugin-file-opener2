@@ -222,7 +222,7 @@ public class FileOpener2 extends CordovaPlugin {
 		String result = null;
 		
 		  if (uri.getScheme().equals("content")) {
-		    Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+		    Cursor cursor = this.cordova.getActivity().getContentResolver().query(uri, null, null, null, null);
 		    try {
 		      if (cursor != null && cursor.moveToFirst()) {
 			result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
